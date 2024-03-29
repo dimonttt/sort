@@ -1,0 +1,3 @@
+﻿  z3.cpp
+C:\Users\Дом\Desktop\универ\КАиСД\lab3\z3\z3.cpp(23,20): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  z3.vcxproj -> C:\Users\Дом\Desktop\универ\КАиСД\lab3\lab3\x64\Debug\z3.exe
