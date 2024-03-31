@@ -3,45 +3,77 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <string>
 using namespace std;
 
-void sortSimpleSort(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations);
-void sortSimpleExchange(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortSimpleSort(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortSimpleExchange(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortSimpleLastExchange(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortShaker(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortSimpleInsert(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void sortSimpleInsertBarrier(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations);
+void SL(vector<int> arr, int left, int mid, int right, int& countElement, int& countAll, int& countPermutations);
+void sortSL(vector<int> arr, int left, int right, int& countElement, int& countAll, int& countPermutations);
+void quick_sort(vector<int> arr, int first, int last, int& countElement, int& countAll, int& countPermutations);
 
-void sortShaker(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations);
-void sortSimpleInsert(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations);
-void sortSimpleInsertBarrier(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations);
-void SL(vector<int>& arr, int left, int mid, int right, int& countElement, int& countAll, int& countPermutations);
-void sortSL(vector<int>& arr, int left, int right, int& countElement, int& countAll, int& countPermutations);
-void quick_sort(vector<int>& arr, int first, int last, int& countElement, int& countAll, int& countPermutations);
+void callingFunction(ofstream& fout, vector<int>& arr, vector<int>& arr2, vector<int>& arr3, int n, int& countElement, int& countAll, int& countPermutations);
+//void outputFile(ofstream& fout, int& countElement, int& countAll, int& countPermutations);
 
 int main()
 {
-	int countElement(0), countAll(0), countPermutations(0);
 	setlocale(LC_ALL, "rus");
-	vector<int> arr = { 4, 3, 2, 8, 3, 8, 1 };
-	int n = arr.size();
+	int countElement(0), countAll(0), countPermutations(0), n, m;
+	vector<string> str;
 
+	ifstream fin("C:\\inSort.txt");
+	ofstream fout("C:\\outSort.txt");	
+	
+	vector<int> arr = { 1, 2, 4, 4, 4, 5, 6, 20, 21, 34 };
+	vector<int> arr2 = { 45, 44, 22, 21, 21, 15, 13, 11, 11, 1 };
+	vector<int> arr3 = { 23, 43, 11, 28, 4, 23, 4, 98, 1, 11 };
+
+	n = arr2.size();
 	for (int i = 0; i < n; i++)
-		cout << arr[i] << " ";
-
-	//sortSimpleSort(arr, n, countElement, countAll, countPermutations);
-	//sortSimpleExchange(arr, n, countElement, countAll, countPermutations);
-	//sortShaker(arr, n, countElement, countAll, countPermutations);
-	//sortSimpleInsert(arr, n, countElement, countAll, countPermutations);
-	sortSimpleInsertBarrier(arr, n, countElement, countAll, countPermutations);
-	//sortSL(arr, 0, arr.size() - 1, countElement, countAll, countPermutations);
-	//quick_sort(arr, 0, arr.size() - 1, countElement, countAll, countPermutations);
-
+		cout << arr2[i] << " ";
+	sortSimpleInsert(arr2, n, countElement, countAll, countPermutations);
 	cout << "\nОтсортированный массив:\n";
 	for (int i = 0; i < n; i++)
-		cout << arr[i] << " ";
+		cout << arr2[i] << " ";
 	cout << "\n" << countElement << " " << countAll << " " << countPermutations;
-	return 0;
+
+
+
+	fout << "№" << "\t\t" << "По неубыванию" << "\t\t\t\t" << "По невозрастанию" << "\t\t\t\t" << "Случайным образом" << "\n";
+	for (int i = 0; i < 3; i++)
+	{
+		fout << " " << "С элементом" << "\t" << "Все" << "\t" << "Перестановки" << "\t\t";
+	}
+	fout << "\n";
+	callingFunction(fout, arr, arr2, arr3, n, countElement, countAll, countPermutations);
+
+	fin.close();
+	fout.close();
+	return 0;	
 }
 
+
+
+//void outputFile(ofstream& fout, vector<int>& arr, vector<int>& arr2, vector<int>& arr3, int n, int& countElement, int& countAll, int& countPermutations)
+//{
+//	/*vector<int> arr_now(n);
+//	for (int i = 0; i < 3; i++)
+//	{
+//		arr_now = arr;
+//		sortSimpleExchange(arr[i], n, countElement, countAll, countPermutations);
+//	}*/
+//	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+//}
+
+
+
 //алгоритм простого выбора
-void sortSimpleSort(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortSimpleSort(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
 	int k(0), m(0);
 	countElement = 0;
@@ -59,7 +91,6 @@ void sortSimpleSort(vector<int>& arr, int n, int& countElement, int& countAll, i
 			{
 				k = j; 
 				m = arr[k];
-				
 				countPermutations++;
 			}
 			countElement++;
@@ -77,7 +108,7 @@ void sortSimpleSort(vector<int>& arr, int n, int& countElement, int& countAll, i
 }
 
 //алгоритм простого обмена
-void sortSimpleExchange(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortSimpleExchange(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
 	int m(0), t(0);
 	countElement = 0;
@@ -96,20 +127,24 @@ void sortSimpleExchange(vector<int>& arr, int n, int& countElement, int& countAl
 				countPermutations++;
 			}
 			countElement++;
+			countAll += 2;
 		}
-		countAll += 3;
+		countAll++;
 	}
 }
 
 //улучшенный алгоритм простого обмена (учет факта последнего обмена и его места)
-void sortSimpleLastExchange(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortSimpleLastExchange(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
-
+	int m(0), t(0);
+	countElement = 0;
+	countAll = 0;
+	countPermutations = 0;
 }
 
 
 //улучшенный алгоритм простого обмена – шейкер-сортировка (учет факта последнего обмена и чередование направлений просмотра элементов)
-void sortShaker(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortShaker(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
 	bool flag = true;
 	int start = 0;
@@ -122,26 +157,30 @@ void sortShaker(vector<int>& arr, int n, int& countElement, int& countAll, int& 
 	while (flag)
 	{
 		flag = false;
-		for (int i = start; i < end; ++i) {
-			if (arr[i] > arr[i + 1]) {
+		for (int i = start; i < end; ++i) {  
+			if (arr[i] > arr[i + 1]) { // Если предыдущий > следующего - смена
 				swap(arr[i], arr[i + 1]);
 				flag = true;
 				lastSwapped = i;
+				countPermutations++;
+				countElement++;
 			}
+			countAll += 2;
 		}
-
 		if (!flag) 
 			break;
-
 		end = lastSwapped;
 		flag = false;
 
 		for (int i = end; i > start; --i) {
-			if (arr[i] < arr[i - 1]) {
+			if (arr[i] < arr[i - 1]) { // Если следующий < предыдущего - смена
 				swap(arr[i], arr[i - 1]);
 				flag = true;
 				lastSwapped = i;
+				countPermutations++;
+				countElement++;
 			}
+			countAll += 2;
 		}
 
 		start = lastSwapped;
@@ -149,34 +188,36 @@ void sortShaker(vector<int>& arr, int n, int& countElement, int& countAll, int& 
 }
 
 //алгоритм прямого включения(простыми вставками)
-void sortSimpleInsert(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortSimpleInsert(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
-	int w(0), j(0);
 	countElement = 0;
 	countAll = 0;
 	countPermutations = 0;
+	int i, key, j;
 
-	for (int i = 1; i < n; i++)
-	{
-		w = arr[i];
+	for (i = 1; i < n; i++) {
+		key = arr[i];
 		j = i - 1;
 
-		while (j > -1 && w < arr[j]) // Подбор места в отсортированном массиве для выбранного элемента  
-		{
-			if (w < arr[j])
+		while (j >= 0 && arr[j] > key) { //Переместить элементы, которые больше, чем key, на одну позицию перед их текущей позицией
+			if (arr[j] > key)
+			{
 				countElement++;
+			}
 			arr[j + 1] = arr[j];
-			j--;
+			j = j - 1;			
+			
 			countPermutations++;
-			countAll += 2;;
+			countAll += 2;
 		}
-		arr[j + 1] = w;
+		arr[j + 1] = key;
 		countAll++;
 	}
+
 }
 
 //улучшенный алгоритм прямого включения(добавить барьерный элемент)
-void sortSimpleInsertBarrier(vector<int>& arr, int n, int& countElement, int& countAll, int& countPermutations)
+void sortSimpleInsertBarrier(vector<int> arr, int n, int& countElement, int& countAll, int& countPermutations)
 {
 	countElement = 0;
 	countAll = 0;
@@ -219,7 +260,7 @@ void sortSimpleInsertBarrier(vector<int>& arr, int n, int& countElement, int& co
 
 
 //алгоритм сортировки слияниями
-void SL(vector<int>& arr, int left, int mid, int right, int& countElement, int& countAll, int& countPermutations) {
+void SL(vector<int> arr, int left, int mid, int right, int& countElement, int& countAll, int& countPermutations) {
 	int n1 = mid - left + 1;
 	int n2 = right - mid;
 
@@ -267,7 +308,7 @@ void SL(vector<int>& arr, int left, int mid, int right, int& countElement, int& 
 	}
 }
 
-void sortSL(vector<int>& arr, int left, int right, int& countElement, int& countAll, int& countPermutations) {
+void sortSL(vector<int> arr, int left, int right, int& countElement, int& countAll, int& countPermutations) {
 	
 	countElement = 0;
 	countAll = 0;
@@ -285,7 +326,7 @@ void sortSL(vector<int>& arr, int left, int right, int& countElement, int& count
 }
 
 //быстрая сортировка Хоара
-void quick_sort(vector<int>& arr, int first, int last, int& countElement, int& countAll, int& countPermutations)
+void quick_sort(vector<int> arr, int first, int last, int& countElement, int& countAll, int& countPermutations)
 {
 	countElement = 0;
 	countAll = 0;
@@ -322,4 +363,114 @@ void quick_sort(vector<int>& arr, int first, int last, int& countElement, int& c
 		quick_sort(arr, first, j, countElement, countAll, countPermutations);
 	if (i < last)
 		quick_sort(arr, i, last, countElement, countAll, countPermutations);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Вывод в файл
+void callingFunction(ofstream& fout, vector<int>& arr, vector<int>& arr2, vector<int>& arr3, int n, int& countElement, int& countAll, int& countPermutations)
+{
+	vector<int> arr_new, arr_new2, arr_new3;
+	arr_new = arr;
+	arr_new2 = arr2;
+	arr_new3 = arr3;
+	/////
+	int number(1);
+	fout << number;
+	sortSimpleSort(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortSimpleSort(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortSimpleSort(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	//outputFile(fout, countElement, countAll, countPermutations);
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortSimpleExchange(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortSimpleExchange(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortSimpleExchange(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortSimpleLastExchange(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleLastExchange(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleLastExchange(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortShaker(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortShaker(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+
+	sortShaker(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortSimpleInsert(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleInsert(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleInsert(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortSimpleInsertBarrier(arr_new, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleInsertBarrier(arr_new2, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSimpleInsertBarrier(arr_new3, n, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	sortSL(arr_new, 0, arr_new.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSL(arr_new2, 0, arr_new2.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	sortSL(arr_new3, 0, arr_new3.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+	/////
+	fout << "\n" << number;
+	quick_sort(arr_new, 0, arr_new.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	quick_sort(arr_new2, 0, arr_new2.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	quick_sort(arr_new3, 0, arr_new3.size() - 1, countElement, countAll, countPermutations);
+	fout << "\t" << countElement << "\t" << countAll << "\t" << countPermutations << "\t\t\t";
+	number++;
+
+
 }
